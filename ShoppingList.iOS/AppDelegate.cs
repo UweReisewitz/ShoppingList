@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-
+﻿using Autofac;
 using Foundation;
+using ShoppingList.Core;
+using ShoppingList.Database;
 using UIKit;
 
 namespace ShoppingList.iOS
@@ -22,11 +21,26 @@ namespace ShoppingList.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
+            var builder = new ContainerBuilder();
+            ConfigureContainer(builder);
+            var container = builder.Build();
+
+            // Initialize SQLite
+            SQLitePCL.Batteries_V2.Init();
+
             global::Xamarin.Forms.Forms.SetFlags("CollectionView_Experimental");
             global::Xamarin.Forms.Forms.Init();
-            LoadApplication(new App());
+
+            var application = new App(container.Resolve<IDbServiceFactory>());
+            LoadApplication(application);
 
             return base.FinishedLaunching(app, options);
+        }
+
+        private static void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterType<PlatformSpecialFolder>().As<IPlatformSpecialFolder>().SingleInstance();
+            builder.RegisterType<DbServiceFactory>().As<IDbServiceFactory>().SingleInstance();
         }
     }
 }

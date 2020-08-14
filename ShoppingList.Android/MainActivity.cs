@@ -1,11 +1,11 @@
-﻿using System;
-
+﻿
 using Android.App;
 using Android.Content.PM;
-using Android.Runtime;
-using Android.Views;
-using Android.Widget;
 using Android.OS;
+using Android.Runtime;
+using Autofac;
+using ShoppingList.Core;
+using ShoppingList.Database;
 
 namespace ShoppingList.Droid
 {
@@ -19,9 +19,16 @@ namespace ShoppingList.Droid
 
             base.OnCreate(savedInstanceState);
 
+            var builder = new ContainerBuilder();
+            ConfigureContainer(builder);
+            var container = builder.Build();
+
+
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            LoadApplication(new App());
+
+            var app = new App(container.Resolve<IDbServiceFactory>());
+            LoadApplication(app);
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
@@ -29,5 +36,12 @@ namespace ShoppingList.Droid
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+
+        private static void ConfigureContainer(ContainerBuilder builder)
+        {
+            builder.RegisterType<PlatformSpecialFolder>().As<IPlatformSpecialFolder>().SingleInstance();
+            builder.RegisterType<DbServiceFactory>().As<IDbServiceFactory>().SingleInstance();
+        }
+
     }
 }

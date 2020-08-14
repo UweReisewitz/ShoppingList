@@ -2,6 +2,7 @@
 using Foundation;
 using ShoppingList.Core;
 using ShoppingList.Database;
+using ShoppingList.ViewModels;
 using UIKit;
 
 namespace ShoppingList.iOS
@@ -31,7 +32,7 @@ namespace ShoppingList.iOS
             global::Xamarin.Forms.Forms.SetFlags("CollectionView_Experimental");
             global::Xamarin.Forms.Forms.Init();
 
-            var application = new App(container.Resolve<IDbServiceFactory>());
+            var application = new App(container.Resolve<IDbServiceFactory>(), container.Resolve<ViewModelLocator>());
             LoadApplication(application);
 
             return base.FinishedLaunching(app, options);
@@ -41,6 +42,7 @@ namespace ShoppingList.iOS
         {
             builder.RegisterType<PlatformSpecialFolder>().As<IPlatformSpecialFolder>().SingleInstance();
             builder.RegisterType<DbServiceFactory>().As<IDbServiceFactory>().SingleInstance();
+            builder.RegisterType<ViewModelLocator>().SingleInstance();
         }
     }
 }

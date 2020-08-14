@@ -4,14 +4,13 @@ using Xamarin.Forms.Xaml;
 using ShoppingList.Services;
 using ShoppingList.Views;
 using ShoppingList.Database;
+using ShoppingList.ViewModels;
 
 namespace ShoppingList
 {
     public partial class App : Application
     {
-        private readonly IDbServiceFactory dbServiceFactory;
-
-        public App(IDbServiceFactory dbServiceFactory)
+        public App(IDbServiceFactory dbServiceFactory, ViewModelLocator viewModelLocator)
         {
             if (dbServiceFactory == null)
             {
@@ -22,11 +21,11 @@ namespace ShoppingList
 
             DependencyService.Register<MockDataStore>();
 
-            this.dbServiceFactory = dbServiceFactory;
-
             var dbService = dbServiceFactory.CreateNew();
 
             dbService.CreateOrUpdateDatabase();
+
+            this.Resources.Add("ViewModelLocator", viewModelLocator);
 
             MainPage = new AppShell();
         }

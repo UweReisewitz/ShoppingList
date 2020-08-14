@@ -12,6 +12,9 @@ namespace ShoppingList.ViewModels
 {
     public class BaseViewModel : INotifyPropertyChanged
     {
+        public virtual void OnAppearing() { }
+        public virtual void OnDisappearing() { }
+
         public IDataStore<Item> DataStore => DependencyService.Get<IDataStore<Item>>();
 
         bool isBusy = false;

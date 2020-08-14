@@ -10,11 +10,18 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="PropertyChanged.Fody" Version="3.2.8" />
     <PackageReference Include="Xamarin.Forms" Version="4.8.0.1269" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\ShoppingList.Database.Types\ShoppingList.Database.Types.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Views\ShoppingItemsPage.xaml.cs">
+      <DependentUpon>ShoppingItemsPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 </Project>

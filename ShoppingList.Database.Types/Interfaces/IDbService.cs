@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ShoppingList.Database
 {
@@ -8,5 +7,6 @@ namespace ShoppingList.Database
     {
         void CreateOrUpdateDatabase();
 
+        Task<List<IShoppingItem>> GetShoppingListItemsAsync();
     }
 }

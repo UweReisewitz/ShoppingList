@@ -1,4 +1,5 @@
 ﻿using Autofac;
+using AutoMapper;
 using Foundation;
 using ShoppingList.Core;
 using ShoppingList.Database;
@@ -40,6 +41,10 @@ namespace ShoppingList.iOS
 
         private static void ConfigureContainer(ContainerBuilder builder)
         {
+            var mapperconfiguration = new ShoppingListMapperConfiguration();
+
+            builder.Register(c => (new MapperConfiguration(cfg => mapperconfiguration.CreateMapping(cfg))).CreateMapper()).As<IMapper>().SingleInstance();
+
             builder.RegisterType<PlatformSpecialFolder>().As<IPlatformSpecialFolder>().SingleInstance();
             builder.RegisterType<DbServiceFactory>().As<IDbServiceFactory>().SingleInstance();
             builder.RegisterType<ViewModelLocator>().SingleInstance();

@@ -1,11 +1,14 @@
 ﻿
+using System;
 using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
 using Autofac;
+using AutoMapper;
 using ShoppingList.Core;
 using ShoppingList.Database;
+using ShoppingList.Models;
 using ShoppingList.ViewModels;
 
 namespace ShoppingList.Droid
@@ -40,10 +43,13 @@ namespace ShoppingList.Droid
 
         private static void ConfigureContainer(ContainerBuilder builder)
         {
+            var mapperconfiguration = new ShoppingListMapperConfiguration();
+
+            builder.Register(c => (new MapperConfiguration(cfg => mapperconfiguration.CreateMapping(cfg))).CreateMapper()).As<IMapper>().SingleInstance();
+
             builder.RegisterType<PlatformSpecialFolder>().As<IPlatformSpecialFolder>().SingleInstance();
             builder.RegisterType<DbServiceFactory>().As<IDbServiceFactory>().SingleInstance();
             builder.RegisterType<ViewModelLocator>().SingleInstance();
         }
-
     }
 }

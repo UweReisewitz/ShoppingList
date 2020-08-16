@@ -1,45 +1,84 @@
-﻿using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using ShoppingList.Services;
-using ShoppingList.Views;
+﻿using System.Threading.Tasks;
+using AutoMapper;
+using Prism;
+using Prism.Ioc;
+using ShoppingList.Core;
 using ShoppingList.Database;
 using ShoppingList.ViewModels;
+using ShoppingList.Views;
+using Xamarin.Forms;
 
 namespace ShoppingList
 {
-    public partial class App : Application
+    public partial class App 
     {
-        public App(IDbServiceFactory dbServiceFactory, ViewModelLocator viewModelLocator)
+        public App(IPlatformInitializer initializer)
+            : base(initializer)
         {
-            if (dbServiceFactory == null)
-            {
-                throw new ArgumentNullException(nameof(dbServiceFactory));
-            }
+        }
 
+        protected override async void OnInitialized()
+        {
             InitializeComponent();
 
-            DependencyService.Register<MockDataStore>();
+            await CreateOrMigrateDatabaseAsync();
 
+            await NavigationService.NavigateAsync("NavigationPage/ShoppingItemsPage");
+        }
+
+        protected override void RegisterTypes(IContainerRegistry containerRegistry)
+        {
+            var mapperconfiguration = new ShoppingListMapperConfiguration();
+
+            containerRegistry.RegisterInstance<IMapper>(new MapperConfiguration(cfg => mapperconfiguration.CreateMapping(cfg)).CreateMapper());
+
+
+            //containerRegistry.RegisterSingleton<IAppInfo, AppInfoImplementation>();
+
+            containerRegistry.RegisterForNavigation<NavigationPage>();
+            containerRegistry.RegisterForNavigation<ShoppingItemsPage, ShoppingItemsViewModel>();
+            containerRegistry.RegisterForNavigation<ShoppingItemDetailPage, ShoppingItemDetailViewModel>();
+        }
+
+        private static async Task CreateOrMigrateDatabaseAsync()
+        {
+            var container = ((App)Application.Current).Container;
+
+            var dbServiceFactory = container.Resolve<IDbServiceFactory>();
             var dbService = dbServiceFactory.CreateNew();
+            await dbService.CreateOrMigrateDatabaseAsync();
 
-            dbService.CreateOrUpdateDatabase();
-
-            this.Resources.Add("ViewModelLocator", viewModelLocator);
-
-            MainPage = new AppShell();
         }
+        //public App(IDbServiceFactory dbServiceFactory, ViewModelLocator viewModelLocator)
+        //{
+        //    if (dbServiceFactory == null)
+        //    {
+        //        throw new ArgumentNullException(nameof(dbServiceFactory));
+        //    }
 
-        protected override void OnStart()
-        {
-        }
+        //    InitializeComponent();
 
-        protected override void OnSleep()
-        {
-        }
+        //    DependencyService.Register<MockDataStore>();
 
-        protected override void OnResume()
-        {
-        }
+        //    var dbService = dbServiceFactory.CreateNew();
+
+        //    dbService.CreateOrUpdateDatabase();
+
+        //    this.Resources.Add("ViewModelLocator", viewModelLocator);
+
+        //    MainPage = new AppShell();
+        //}
+
+        //protected override void OnStart()
+        //{
+        //}
+
+        //protected override void OnSleep()
+        //{
+        //}
+
+        //protected override void OnResume()
+        //{
+        //}
     }
 }

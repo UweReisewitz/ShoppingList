@@ -1,12 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Runtime.CompilerServices;
-using System.Text;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ShoppingList.Core;
 using ShoppingList.Database.Model;
-using Xamarin.Essentials;
 
 [assembly: InternalsVisibleToAttribute("DataBaseMigrationHelper")]
 
@@ -21,8 +19,11 @@ namespace ShoppingList.Database
         public LocalDbContext(IPlatformSpecialFolder iSpecialFolder)
         {
             this.iSpecialFolder = iSpecialFolder;
+        }
 
-            this.Database.Migrate();
+        public async Task CreateOrMigrateDatabaseAsync()
+        {
+            await Database.MigrateAsync();
 
             if (dbIsNew)
             {
@@ -51,7 +52,7 @@ namespace ShoppingList.Database
                 ShoppingItem.Add(item2);
                 ShoppingItem.Add(item3);
                 ShoppingItem.Add(item4);
-                SaveChanges();
+                await SaveChangesAsync();
             }
         }
 

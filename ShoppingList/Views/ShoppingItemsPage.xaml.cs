@@ -2,7 +2,7 @@
 
 namespace ShoppingList.Views
 {
-    public partial class ShoppingItemsPage : BasePage
+    public partial class ShoppingItemsPage : ContentPage
     {
         public ShoppingItemsPage()
         {

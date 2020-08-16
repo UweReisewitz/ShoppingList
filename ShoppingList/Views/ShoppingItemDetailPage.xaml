@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:BasePage xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:ShoppingList.Views"
              x:Class="ShoppingList.Views.ShoppingItemDetailPage"
              Title="{Binding Title}"
-             BindingContext="{Binding ShoppingItemDetail, Source={StaticResource ViewModelLocator}}"
+             BindingContext="local:ShoppingItemDetailViewModel"
                 >
 
     <StackLayout Spacing="20" Padding="15">
@@ -16,4 +16,4 @@
         <Label Text="{Binding LastBought}" FontSize="Small"/>
     </StackLayout>
     
-</views:BasePage>
+</ContentPage>

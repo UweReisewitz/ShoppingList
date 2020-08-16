@@ -17,10 +17,12 @@ namespace ShoppingList.Database
             this.platformSpecialFolder = platformSpecialFolder;
         }
 
-        public void CreateOrUpdateDatabase()
+        public async Task CreateOrMigrateDatabaseAsync()
         {
             using (var dbContext = new LocalDbContext(platformSpecialFolder))
-            { }
+            {
+                await dbContext.CreateOrMigrateDatabaseAsync();
+            }
         }
 
         public async Task<List<IShoppingItem>> GetShoppingListItemsAsync()

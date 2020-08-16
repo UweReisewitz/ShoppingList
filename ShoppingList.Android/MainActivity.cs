@@ -1,19 +1,15 @@
-﻿
-using System;
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
-using Autofac;
-using AutoMapper;
+using Prism;
+using Prism.Ioc;
 using ShoppingList.Core;
 using ShoppingList.Database;
-using ShoppingList.Models;
-using ShoppingList.ViewModels;
 
 namespace ShoppingList.Droid
 {
-    [Activity(Label = "ShoppingList", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
+    [Activity(Label = "ShoppingList", Icon = "@mipmap/icon", Theme = "@style/MainTheme", ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -23,16 +19,9 @@ namespace ShoppingList.Droid
 
             base.OnCreate(savedInstanceState);
 
-            var builder = new ContainerBuilder();
-            ConfigureContainer(builder);
-            var container = builder.Build();
-
-
-            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
-            var app = new App(container.Resolve<IDbServiceFactory>(), container.Resolve<ViewModelLocator>());
-            LoadApplication(app);
+            LoadApplication(new App(new AndroidInitializer()));
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
@@ -40,16 +29,16 @@ namespace ShoppingList.Droid
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
+    }
 
-        private static void ConfigureContainer(ContainerBuilder builder)
+
+    public class AndroidInitializer : IPlatformInitializer
+    {
+        public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            var mapperconfiguration = new ShoppingListMapperConfiguration();
-
-            builder.Register(c => (new MapperConfiguration(cfg => mapperconfiguration.CreateMapping(cfg))).CreateMapper()).As<IMapper>().SingleInstance();
-
-            builder.RegisterType<PlatformSpecialFolder>().As<IPlatformSpecialFolder>().SingleInstance();
-            builder.RegisterType<DbServiceFactory>().As<IDbServiceFactory>().SingleInstance();
-            builder.RegisterType<ViewModelLocator>().SingleInstance();
+            containerRegistry.RegisterSingleton<IPlatformSpecialFolder, PlatformSpecialFolder>();
+            containerRegistry.RegisterSingleton<IDbServiceFactory, DbServiceFactory>();
+            // Register any platform specific implementations
         }
     }
 }

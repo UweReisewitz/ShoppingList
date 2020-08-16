@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<views:BasePage xmlns="http://xamarin.com/schemas/2014/forms"
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="ShoppingList.Views.ShoppingItemsPage"
              Title="{Binding Title}"
              xmlns:views="clr-namespace:ShoppingList.Views"
              xmlns:local="clr-namespace:ShoppingList.ViewModels"  
              xmlns:model="clr-namespace:ShoppingList.Models"  
-             BindingContext="{Binding ShoppingItems, Source={StaticResource ViewModelLocator}}"
+             BindingContext="local:ShoppingItemsViewModel"
              >
 
     <ContentPage.ToolbarItems>
@@ -43,4 +43,4 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
     </RefreshView>
-</views:BasePage>
+</ContentPage>

@@ -1,6 +1,8 @@
-﻿namespace ShoppingList.Views
+﻿using Xamarin.Forms;
+
+namespace ShoppingList.Views
 {
-    public partial class ShoppingItemDetailPage : BasePage
+    public partial class ShoppingItemDetailPage : ContentPage
     {
         public ShoppingItemDetailPage()
         {

@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using AutoMapper;
+using Prism.Commands;
+using Prism.Navigation;
 using PropertyChanged;
 using ShoppingList.Database;
 using ShoppingList.Models;
@@ -16,31 +19,26 @@ namespace ShoppingList.ViewModels
         private readonly IDbService dbService;
         private readonly IMapper mapper;
 
-        public ShoppingItemsViewModel(IDbService dbService, IMapper mapper)
+        public ShoppingItemsViewModel(INavigationService navigationService, IDbServiceFactory dbServiceFactory, IMapper mapper)
+            : base(navigationService)
         {
-            this.dbService = dbService;
+            this.dbService = dbServiceFactory?.CreateNew() ?? throw new ArgumentNullException(nameof(dbServiceFactory));
             this.mapper = mapper;
 
             Title = "Shopping List";
 
             Items = new ObservableCollection<UIShoppingItem>();
-            LoadItemsCommand = new Command(async () => await ExecuteLoadItemsCommandAsync());
+            LoadItemsCommand = new DelegateCommand(async () => await ExecuteLoadItemsCommandAsync());
 
             ItemTapped = new Command<UIShoppingItem>(OnItemSelectedAsync);
 
-            AddItemCommand = new Command(OnAddItem);
-
-        }
-
-        public ShoppingItemsViewModel(IDbServiceFactory dbServiceFactory)
-        {
-            dbService = dbServiceFactory?.CreateNew() ?? throw new ArgumentNullException(nameof(dbServiceFactory));
+            AddItemCommand = new DelegateCommand(async () => await OnAddItemAsync());
 
         }
 
         public ObservableCollection<UIShoppingItem> Items { get; private set; }
-        public Command LoadItemsCommand { get; }
-        public Command AddItemCommand { get; }
+        public DelegateCommand LoadItemsCommand { get; }
+        public DelegateCommand AddItemCommand { get; }
         public Command<UIShoppingItem> ItemTapped { get; }
 
         private async Task ExecuteLoadItemsCommandAsync()
@@ -57,16 +55,14 @@ namespace ShoppingList.ViewModels
                     Items.Add(mapper.Map<UIShoppingItem>(item));
                 }
             }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex);
+            }
             finally
             {
                 IsBusy = false;
             }
-        }
-
-        public override void OnAppearing()
-        {
-            IsBusy = true;
-            SelectedItem = null;
         }
 
         private UIShoppingItem selectedItem;
@@ -76,7 +72,7 @@ namespace ShoppingList.ViewModels
             set => OnItemSelectedAsync(value);
         }
 
-        private async void OnAddItem(object obj)
+        private async Task OnAddItemAsync()
         {
             await Shell.Current.GoToAsync(nameof(NewItemPage));
         }
@@ -86,8 +82,15 @@ namespace ShoppingList.ViewModels
             if (item != null)
             {
                 // This will push the ShoppingItemDetailPage onto the navigation stack
-                await Shell.Current.GoToAsync($"{nameof(ShoppingItemDetailPage)}");
+                await NavigationService.NavigateAsync("ShoppingItemDetailPage");
             }
+        }
+
+        public override async Task InitializeAsync(INavigationParameters parameters)
+        {
+            SelectedItem = null;
+
+            await ExecuteLoadItemsCommandAsync();
         }
     }
 }

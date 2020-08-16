@@ -5,7 +5,7 @@ namespace ShoppingList.Database
 {
     public interface IDbService
     {
-        void CreateOrUpdateDatabase();
+        Task CreateOrMigrateDatabaseAsync();
 
         Task<List<IShoppingItem>> GetShoppingListItemsAsync();
     }

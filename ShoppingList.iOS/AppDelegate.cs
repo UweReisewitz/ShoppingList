@@ -1,9 +1,8 @@
-﻿using Autofac;
-using AutoMapper;
-using Foundation;
+﻿using Foundation;
+using Prism;
+using Prism.Ioc;
 using ShoppingList.Core;
 using ShoppingList.Database;
-using ShoppingList.ViewModels;
 using UIKit;
 
 namespace ShoppingList.iOS
@@ -23,31 +22,24 @@ namespace ShoppingList.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            var builder = new ContainerBuilder();
-            ConfigureContainer(builder);
-            var container = builder.Build();
-
             // Initialize SQLite
             SQLitePCL.Batteries_V2.Init();
 
-            global::Xamarin.Forms.Forms.SetFlags("CollectionView_Experimental");
             global::Xamarin.Forms.Forms.Init();
-
-            var application = new App(container.Resolve<IDbServiceFactory>(), container.Resolve<ViewModelLocator>());
-            LoadApplication(application);
+            LoadApplication(new App(new iOSInitializer()));
 
             return base.FinishedLaunching(app, options);
         }
 
-        private static void ConfigureContainer(ContainerBuilder builder)
+    }
+
+    public class iOSInitializer : IPlatformInitializer
+    {
+        public void RegisterTypes(IContainerRegistry containerRegistry)
         {
-            var mapperconfiguration = new ShoppingListMapperConfiguration();
-
-            builder.Register(c => (new MapperConfiguration(cfg => mapperconfiguration.CreateMapping(cfg))).CreateMapper()).As<IMapper>().SingleInstance();
-
-            builder.RegisterType<PlatformSpecialFolder>().As<IPlatformSpecialFolder>().SingleInstance();
-            builder.RegisterType<DbServiceFactory>().As<IDbServiceFactory>().SingleInstance();
-            builder.RegisterType<ViewModelLocator>().SingleInstance();
+            containerRegistry.RegisterSingleton<IPlatformSpecialFolder, PlatformSpecialFolder>();
+            containerRegistry.RegisterSingleton<IDbServiceFactory, DbServiceFactory>();
+            // Register any platform specific implementations
         }
     }
 }

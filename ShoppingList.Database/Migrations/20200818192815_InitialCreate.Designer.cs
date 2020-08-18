@@ -9,7 +9,7 @@ using ShoppingList.Database;
 namespace ShoppingList.Database.Migrations
 {
     [DbContext(typeof(LocalDbContext))]
-    [Migration("20200813163021_InitialCreate")]
+    [Migration("20200818192815_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,16 +20,20 @@ namespace ShoppingList.Database.Migrations
 
             modelBuilder.Entity("ShoppingList.Database.Model.ShoppingItem", b =>
                 {
-                    b.Property<string>("Name")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("LastBought")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("State")
                         .HasColumnType("int");
 
-                    b.HasKey("Name");
+                    b.HasKey("Id");
 
                     b.ToTable("ShoppingItem");
                 });

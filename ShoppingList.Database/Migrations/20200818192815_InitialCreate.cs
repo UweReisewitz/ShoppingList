@@ -7,32 +7,23 @@ namespace ShoppingList.Database.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            if (migrationBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(migrationBuilder));
-            }
-
             migrationBuilder.CreateTable(
                 name: "ShoppingItem",
                 columns: table => new
                 {
-                    Name = table.Column<string>(nullable: false),
+                    Id = table.Column<Guid>(nullable: false),
+                    Name = table.Column<string>(nullable: true),
                     State = table.Column<int>(type: "int", nullable: false),
                     LastBought = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ShoppingItem", x => x.Name);
+                    table.PrimaryKey("PK_ShoppingItem", x => x.Id);
                 });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            if (migrationBuilder == null)
-            {
-                throw new ArgumentNullException(nameof(migrationBuilder));
-            }
-
             migrationBuilder.DropTable(
                 name: "ShoppingItem");
         }

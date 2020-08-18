@@ -18,16 +18,20 @@ namespace ShoppingList.Database.Migrations
 
             modelBuilder.Entity("ShoppingList.Database.Model.ShoppingItem", b =>
                 {
-                    b.Property<string>("Name")
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("TEXT");
 
                     b.Property<DateTime>("LastBought")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Name")
+                        .HasColumnType("TEXT");
+
                     b.Property<int>("State")
                         .HasColumnType("int");
 
-                    b.HasKey("Name");
+                    b.HasKey("Id");
 
                     b.ToTable("ShoppingItem");
                 });

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using AutoMapper;
+using Prism.Commands;
 using Prism.Navigation;
 using PropertyChanged;
 using ShoppingList.Core;
@@ -18,13 +20,15 @@ namespace ShoppingList.ViewModels
         private readonly IMapper mapper;
 
         private IDbService dbService;
-        private UIShoppingItem shoppingItem;
+        private UIShoppingItem uiShoppingItem;
 
         public ShoppingItemDetailViewModel(INavigationService navigationService, IMapper mapper)
             : base(navigationService)
         {
             Title = "Detail View";
             this.mapper = mapper;
+
+            UpdateSuggestedNames = new DelegateCommand<bool?>(async (bool? performUpdate) => await PerformUpdateSuggestedNamesAsync(performUpdate));
         }
 
         public Guid Id { get; set; }
@@ -58,6 +62,22 @@ namespace ShoppingList.ViewModels
 
         public DateTime LastBought { get; set; }
 
+
+        public DelegateCommand<bool?> UpdateSuggestedNames { get; }
+        private async Task PerformUpdateSuggestedNamesAsync(bool? performUpdate)
+        {
+            if (performUpdate.HasValue && performUpdate.Value)
+            {
+                SuggestedNames = await dbService.GetSuggestedNames(Name);
+            }
+            else
+            {
+                SuggestedNames = null;
+            }
+        }
+
+        public List<string> SuggestedNames { get; private set; }
+
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
             if (parameters == null)
@@ -66,15 +86,26 @@ namespace ShoppingList.ViewModels
             }
 
             dbService = (IDbService)parameters["DbService"];
-            shoppingItem = (UIShoppingItem)parameters["Item"];
-            mapper.Map(shoppingItem, this);
+            uiShoppingItem = (UIShoppingItem)parameters["Item"];
+            mapper.Map(uiShoppingItem, this);
         }
 
         public override void OnNavigatedFrom(INavigationParameters parameters)
         {
-            if (dbService != null && shoppingItem != null)
+            if (dbService != null && uiShoppingItem != null)
             {
-                mapper.Map(this, shoppingItem);
+                var oldItem = dbService.FindShoppingItem(Name);
+                if (oldItem != null)
+                {
+                    if (uiShoppingItem.IsNewShoppingItem)
+                    {
+                        dbService.RemoveShoppingItem(uiShoppingItem.DbShoppingItem);
+                        LastBought = oldItem.LastBought;
+                    }
+                    uiShoppingItem = new UIShoppingItem(oldItem);
+                    Id = uiShoppingItem.Id;
+                }
+                mapper.Map(this, uiShoppingItem);
                 dbService.SaveChanges();
             }
 

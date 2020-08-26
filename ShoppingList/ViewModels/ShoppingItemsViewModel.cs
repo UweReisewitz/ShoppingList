@@ -53,7 +53,7 @@ namespace ShoppingList.ViewModels
 
                 foreach (var item in items)
                 {
-                    Items.Add(new UIShoppingItem(item, mapper));
+                    Items.Add(new UIShoppingItem(item));
                 }
             }
             catch (Exception ex)
@@ -77,7 +77,7 @@ namespace ShoppingList.ViewModels
         {
             var dbShoppingItem = new ShoppingItem();
             dbService.AddShoppingItem(dbShoppingItem);
-            var uiShoppingItem = new UIShoppingItem(dbShoppingItem, mapper);
+            var uiShoppingItem = new UIShoppingItem(dbShoppingItem, true);
 
             await NavigateToDetailPageAsync(uiShoppingItem);
         }

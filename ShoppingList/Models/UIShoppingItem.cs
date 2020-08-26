@@ -12,34 +12,39 @@ namespace ShoppingList.Models
     [AddINotifyPropertyChangedInterface]
     public class UIShoppingItem
     {
-        private readonly IMapper mapper;
-        private readonly ShoppingItem shoppingItem;
-
-        public UIShoppingItem(ShoppingItem shoppingItem, IMapper mapper)
+        public UIShoppingItem(ShoppingItem shoppingItem)
+            : this(shoppingItem, false)
         {
-            this.mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
-            this.shoppingItem = shoppingItem;
         }
 
+        public UIShoppingItem(ShoppingItem shoppingItem, bool isNewShoppingItem)
+        {
+            DbShoppingItem = shoppingItem;
+            IsNewShoppingItem = isNewShoppingItem;
+        }
+
+        public bool IsNewShoppingItem { get; }
+
+        public ShoppingItem DbShoppingItem { get; }
         public Guid Id
         {
-            get => shoppingItem.Id;
-            set => shoppingItem.Id = value;
+            get => DbShoppingItem.Id;
+            set => DbShoppingItem.Id = value;
         }
         public string Name
         {
-            get => shoppingItem.Name;
-            set => shoppingItem.Name = value;
+            get => DbShoppingItem.Name;
+            set => DbShoppingItem.Name = value;
         }
         public ShoppingItemState State
         {
-            get => shoppingItem.State;
-            set => shoppingItem.State = value;
+            get => DbShoppingItem.State;
+            set => DbShoppingItem.State = value;
         }
         public DateTime LastBought
         {
-            get => shoppingItem.LastBought;
-            set => shoppingItem.LastBought = value;
+            get => DbShoppingItem.LastBought;
+            set => DbShoppingItem.LastBought = value;
         }
 
         [DependsOn(nameof(State))]

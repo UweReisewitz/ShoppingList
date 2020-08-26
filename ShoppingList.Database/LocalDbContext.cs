@@ -29,22 +29,22 @@ namespace ShoppingList.Database
             {
                 var item1 = new ShoppingItem()
                 {
-                    Name = "Test1",
+                    Name = "Äpfel",
                     State = ShoppingItemState.Open
                 };
                 var item2 = new ShoppingItem()
                 {
-                    Name = "Test2",
+                    Name = "Birnen",
                     State = ShoppingItemState.Open
                 };
                 var item3 = new ShoppingItem()
                 {
-                    Name = "Test3",
+                    Name = "Bananen",
                     State = ShoppingItemState.Bought
                 };
                 var item4 = new ShoppingItem()
                 {
-                    Name = "Test4",
+                    Name = "Müsli",
                     State = ShoppingItemState.ShoppingComplete,
                     LastBought = DateTime.Now
                 };

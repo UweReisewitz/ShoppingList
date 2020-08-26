@@ -29,8 +29,9 @@
                     </VisualStateGroupList>
                 </Setter>
             </Style>
-            <converters:DisplayDateTimeConverter x:Key="DisplayDateTimeConverter"></converters:DisplayDateTimeConverter>
-            <converters:DisplayGuidConverter x:Key="DisplayGuidConverter"></converters:DisplayGuidConverter>
+            <converters:DisplayDateTimeConverter x:Key="DisplayDateTimeConverter"/>
+            <converters:DisplayGuidConverter x:Key="DisplayGuidConverter"/>
+            <converters:AutoSuggestBoxTextChangedEventArgsToPerformUpdateConverter x:Key="AutoSuggestTextChangedConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </prism:PrismApplication>

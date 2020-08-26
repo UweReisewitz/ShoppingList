@@ -12,11 +12,12 @@ namespace ShoppingList.Database
     public class DbService : IDbService, IDisposable
     {
         private readonly IPlatformSpecialFolder platformSpecialFolder;
-        private LocalDbContext localContext;
+        private readonly LocalDbContext localContext;
 
         public DbService(IPlatformSpecialFolder platformSpecialFolder)
         {
             this.platformSpecialFolder = platformSpecialFolder;
+            localContext = new LocalDbContext(platformSpecialFolder);
         }
 
         public async Task CreateOrMigrateDatabaseAsync()
@@ -39,21 +40,11 @@ namespace ShoppingList.Database
 
         public async Task<ObservableCollection<ShoppingItem>> GetShoppingListItemsAsync()
         {
-            CreateContext();
-
             var list = await localContext.ShoppingItem
+                .Where(si => si.State != ShoppingItemState.ShoppingComplete)
                 .ToListAsync();
 
-            return new ObservableCollection<ShoppingItem>(list);
-        }
-
-
-        private void CreateContext()
-        {
-            if (localContext == null)
-            {
-                localContext = new LocalDbContext(platformSpecialFolder);
-            }
+            return new ObservableCollection<ShoppingItem>(list.OrderBy(si => si.Name, StringComparer.CurrentCulture));
         }
 
 
@@ -68,7 +59,6 @@ namespace ShoppingList.Database
                     if (localContext != null)
                     {
                         localContext.Dispose();
-                        localContext = null;
                     }
                 }
 
@@ -87,7 +77,27 @@ namespace ShoppingList.Database
 
         public void AddShoppingItem(ShoppingItem item)
         {
-            localContext.Add(item);
+            localContext.ShoppingItem.Add(item);
+        }
+
+        public Task<List<string>> GetSuggestedNames(string name)
+        {
+            return localContext.ShoppingItem
+                .Where(si => si.Name.Contains(name))
+                .Select(si => si.Name)
+                .ToListAsync();
+        }
+
+        public ShoppingItem FindShoppingItem(string name)
+        {
+            return localContext.ShoppingItem
+                .Where(si => si.Name == name)
+                .FirstOrDefault();
+        }
+
+        public void RemoveShoppingItem(ShoppingItem item)
+        {
+            localContext.Remove(item);
         }
     }
 }

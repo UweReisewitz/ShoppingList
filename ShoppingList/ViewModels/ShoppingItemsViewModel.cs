@@ -7,6 +7,7 @@ using Prism.Commands;
 using Prism.Navigation;
 using PropertyChanged;
 using ShoppingList.Database;
+using ShoppingList.Database.Model;
 using ShoppingList.Models;
 using ShoppingList.Views;
 using Xamarin.Forms;
@@ -52,7 +53,7 @@ namespace ShoppingList.ViewModels
 
                 foreach (var item in items)
                 {
-                    Items.Add(mapper.Map<UIShoppingItem>(item));
+                    Items.Add(new UIShoppingItem(item, mapper));
                 }
             }
             catch (Exception ex)
@@ -74,15 +75,38 @@ namespace ShoppingList.ViewModels
 
         private async Task OnAddItemAsync()
         {
-            await Shell.Current.GoToAsync(nameof(NewItemPage));
+            var dbShoppingItem = new ShoppingItem();
+            dbService.AddShoppingItem(dbShoppingItem);
+            var uiShoppingItem = new UIShoppingItem(dbShoppingItem, mapper);
+
+            await NavigateToDetailPageAsync(uiShoppingItem);
         }
 
         private async void OnItemSelectedAsync(UIShoppingItem item)
         {
             if (item != null)
             {
-                // This will push the ShoppingItemDetailPage onto the navigation stack
-                await NavigationService.NavigateAsync("ShoppingItemDetailPage");
+                await NavigateToDetailPageAsync(item);
+            }
+        }
+
+        private async Task NavigateToDetailPageAsync(UIShoppingItem uiShoppingItem)
+        {
+            var parameters = new NavigationParameters
+                {
+                    { "DbService", dbService },
+                    { "Item", uiShoppingItem }
+                };
+
+            // This will push the ShoppingItemDetailPage onto the navigation stack
+            await NavigationService.NavigateAsync("ShoppingItemDetailPage", parameters);
+        }
+
+        public override void OnNavigatedTo(INavigationParameters parameters)
+        {
+            if (parameters.GetNavigationMode() == NavigationMode.Back)
+            {
+                IsBusy = true;  // Refresh
             }
         }
 

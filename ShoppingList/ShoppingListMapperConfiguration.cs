@@ -1,7 +1,7 @@
 ﻿using System;
 using AutoMapper;
-using ShoppingList.Database;
 using ShoppingList.Models;
+using ShoppingList.ViewModels;
 
 namespace ShoppingList
 {
@@ -14,7 +14,8 @@ namespace ShoppingList
                 throw new ArgumentNullException(nameof(configuration));
             }
 
-            configuration.CreateMap<IShoppingItem, UIShoppingItem>();
+            configuration.CreateMap<Database.Model.ShoppingItem, UIShoppingItem>().ReverseMap();
+            configuration.CreateMap<UIShoppingItem, ShoppingItemDetailViewModel>().ReverseMap();
         }
 
     }

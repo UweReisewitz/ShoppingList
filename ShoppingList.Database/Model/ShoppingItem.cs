@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace ShoppingList.Database.Model
 {
-    public class ShoppingItem : IShoppingItem
+    public class ShoppingItem 
     {
         public ShoppingItem()
         {

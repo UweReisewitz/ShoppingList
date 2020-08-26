@@ -30,7 +30,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ShoppingList.Core\ShoppingList.Core.csproj" />
-    <ProjectReference Include="..\ShoppingList.Database.Types\ShoppingList.Database.Types.csproj" />
   </ItemGroup>
 
   <ItemGroup>

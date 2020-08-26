@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using ShoppingList.Core;
+using ShoppingList.Database.Model;
 
 namespace ShoppingList.Database
 {
@@ -25,13 +27,24 @@ namespace ShoppingList.Database
             }
         }
 
-        public async Task<List<IShoppingItem>> GetShoppingListItemsAsync()
+        public async Task SaveChangesAsync()
+        {
+            await localContext!.SaveChangesAsync();
+        }
+
+        public void SaveChanges()
+        {
+            localContext!.SaveChanges();
+        }
+
+        public async Task<ObservableCollection<ShoppingItem>> GetShoppingListItemsAsync()
         {
             CreateContext();
 
-            return await localContext.ShoppingItem
-                .Cast<IShoppingItem>()
+            var list = await localContext.ShoppingItem
                 .ToListAsync();
+
+            return new ObservableCollection<ShoppingItem>(list);
         }
 
 
@@ -70,6 +83,11 @@ namespace ShoppingList.Database
             // Do not change this code. Put cleanup code in 'Dispose(bool disposing)' method
             Dispose(disposing: true);
             GC.SuppressFinalize(this);
+        }
+
+        public void AddShoppingItem(ShoppingItem item)
+        {
+            localContext.Add(item);
         }
     }
 }

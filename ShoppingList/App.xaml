@@ -2,6 +2,7 @@
 <prism:PrismApplication xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:prism="http://prismlibrary.com"
+             xmlns:converters="clr-namespace:ShoppingList.ValueConverters"
              x:Class="ShoppingList.App">
     <!--
         Define global resources and styles here, that apply to all pages in your app.
@@ -28,6 +29,8 @@
                     </VisualStateGroupList>
                 </Setter>
             </Style>
-        </ResourceDictionary>        
+            <converters:DisplayDateTimeConverter x:Key="DisplayDateTimeConverter"></converters:DisplayDateTimeConverter>
+            <converters:DisplayGuidConverter x:Key="DisplayGuidConverter"></converters:DisplayGuidConverter>
+        </ResourceDictionary>
     </Application.Resources>
 </prism:PrismApplication>

@@ -1,19 +1,38 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:views="clr-namespace:ShoppingList.Views"
+             xmlns:local="clr-namespace:ShoppingList.ViewModels"  
              x:Class="ShoppingList.Views.ShoppingItemDetailPage"
              Title="{Binding Title}"
              BindingContext="local:ShoppingItemDetailViewModel"
                 >
 
-    <StackLayout Spacing="20" Padding="15">
-        <Label Text="Name:" FontSize="Medium" />
-        <Label Text="{Binding Name}" FontSize="Small"/>
-        <Label Text="State:" FontSize="Medium" />
-        <Label Text="{Binding StateText}" FontSize="Small"/>
-        <Label Text="Last bought:" FontSize="Medium" />
-        <Label Text="{Binding LastBought}" FontSize="Small"/>
-    </StackLayout>
-    
+    <Grid>
+        <StackLayout  Orientation="Vertical" Spacing="20">
+            <Grid Padding="17,0,5,0" RowSpacing="20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="3*"/>
+                    <ColumnDefinition Width="7*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label Grid.Row="0" Grid.Column="0" Text="Id:"  />
+                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Id, Converter={StaticResource DisplayGuidConverter}}" />
+                <Label Grid.Row="1" Grid.Column="0" Text="Name:"  />
+                <Entry Grid.Row="1" Grid.Column="1" Text="{Binding Name}" />
+                <Label Grid.Row="2" Grid.Column="0" Text="State:"  />
+                <Picker Grid.Row="2" Grid.Column="1"  ItemsSource="{Binding ItemStateList}" 
+                        ItemDisplayBinding="{Binding Description}" SelectedItem="{Binding ItemState}" />
+                <Label Grid.Row="3" Grid.Column="0" Text="Last bought:" />
+                <Label Grid.Row="3" Grid.Column="1" Text="{Binding LastBought, Converter={StaticResource DisplayDateTimeConverter}}" />
+
+            </Grid>
+        </StackLayout>
+    </Grid>
+
 </ContentPage>

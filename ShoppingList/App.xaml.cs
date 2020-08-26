@@ -2,7 +2,6 @@
 using AutoMapper;
 using Prism;
 using Prism.Ioc;
-using ShoppingList.Core;
 using ShoppingList.Database;
 using ShoppingList.ViewModels;
 using ShoppingList.Views;
@@ -49,36 +48,5 @@ namespace ShoppingList
             await dbService.CreateOrMigrateDatabaseAsync();
 
         }
-        //public App(IDbServiceFactory dbServiceFactory, ViewModelLocator viewModelLocator)
-        //{
-        //    if (dbServiceFactory == null)
-        //    {
-        //        throw new ArgumentNullException(nameof(dbServiceFactory));
-        //    }
-
-        //    InitializeComponent();
-
-        //    DependencyService.Register<MockDataStore>();
-
-        //    var dbService = dbServiceFactory.CreateNew();
-
-        //    dbService.CreateOrUpdateDatabase();
-
-        //    this.Resources.Add("ViewModelLocator", viewModelLocator);
-
-        //    MainPage = new AppShell();
-        //}
-
-        //protected override void OnStart()
-        //{
-        //}
-
-        //protected override void OnSleep()
-        //{
-        //}
-
-        //protected override void OnResume()
-        //{
-        //}
     }
 }

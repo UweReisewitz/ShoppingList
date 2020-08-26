@@ -167,10 +167,6 @@
       <Project>{0dfbf70d-18e3-4e29-a405-80cec3f0a747}</Project>
       <Name>ShoppingList.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\ShoppingList.Database.Types\ShoppingList.Database.Types.csproj">
-      <Project>{D2B75C13-9CF4-4EE6-9B0A-6D651A4295C9}</Project>
-      <Name>ShoppingList.Database.Types</Name>
-    </ProjectReference>
     <ProjectReference Include="..\ShoppingList.Database\ShoppingList.Database.csproj">
       <Project>{ACCD63BA-BCA6-4F84-AF20-99F74D9F673B}</Project>
       <Name>ShoppingList.Database</Name>

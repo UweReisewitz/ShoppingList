@@ -17,6 +17,7 @@ namespace ShoppingList.Database
 
         void AddShoppingItem(ShoppingItem item);
         void RemoveShoppingItem(ShoppingItem item);
+        Task EndShopping();
 
         ShoppingItem FindShoppingItem(string name);
 

@@ -19,7 +19,8 @@ namespace ShoppingList.Droid
 
             base.OnCreate(savedInstanceState);
 
-            global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            Xamarin.Forms.Forms.SetFlags("SwipeView_Experimental");
+            Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             LoadApplication(new App(new AndroidInitializer()));
         }

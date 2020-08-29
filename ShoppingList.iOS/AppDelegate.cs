@@ -25,6 +25,7 @@ namespace ShoppingList.iOS
             // Initialize SQLite
             SQLitePCL.Batteries_V2.Init();
 
+            global::Xamarin.Forms.Forms.SetFlags("SwipeView_Experimental");
             global::Xamarin.Forms.Forms.Init();
             LoadApplication(new App(new iOSInitializer()));
 

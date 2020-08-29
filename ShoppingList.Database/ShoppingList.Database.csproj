@@ -16,6 +16,8 @@
   <ItemGroup>
     <Compile Remove="Migrations\20200816184727_MyMigration.cs" />
     <Compile Remove="Migrations\20200816184727_MyMigration.Designer.cs" />
+    <Compile Remove="Migrations\20200826181454_UserInterface6.cs" />
+    <Compile Remove="Migrations\20200826181454_UserInterface6.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -30,10 +32,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\ShoppingList.Core\ShoppingList.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Migrations\" />
   </ItemGroup>
 
 </Project>

@@ -31,16 +31,38 @@ namespace ShoppingList.ViewModels
             Items = new ObservableCollection<UIShoppingItem>();
             LoadItemsCommand = new DelegateCommand(async () => await ExecuteLoadItemsCommandAsync());
 
-            ItemTapped = new Command<UIShoppingItem>(OnItemSelectedAsync);
+            SetItemBought = new DelegateCommand<UIShoppingItem>(async (UIShoppingItem item) => await SetItemBoughtAsync(item));
+            ItemTapped = new DelegateCommand<UIShoppingItem>(OnItemSelectedAsync);
 
             AddItemCommand = new DelegateCommand(async () => await OnAddItemAsync());
+            ShoppingDoneCommand = new DelegateCommand(async () => await ShoppingDoneCommandAsync());
 
         }
+
+        public DelegateCommand ShoppingDoneCommand { get; }
+        private async Task ShoppingDoneCommandAsync()
+        {
+            await dbService.EndShopping();
+            await ExecuteLoadItemsCommandAsync();
+        }
+
+
+        public DelegateCommand<UIShoppingItem> SetItemBought { get; }
+
+        private async Task SetItemBoughtAsync(UIShoppingItem item)
+        {
+            if (item != null && item.State == ShoppingItemState.Open)
+            {
+                item.State = ShoppingItemState.Bought;
+                await dbService.SaveChangesAsync();
+            }
+        }
+
 
         public ObservableCollection<UIShoppingItem> Items { get; private set; }
         public DelegateCommand LoadItemsCommand { get; }
         public DelegateCommand AddItemCommand { get; }
-        public Command<UIShoppingItem> ItemTapped { get; }
+        public DelegateCommand<UIShoppingItem> ItemTapped { get; }
 
         private async Task ExecuteLoadItemsCommandAsync()
         {

@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
+using Plugin.Media;
+using Plugin.Media.Abstractions;
 using Prism.Commands;
 using Prism.Navigation;
 using PropertyChanged;
@@ -11,6 +14,7 @@ using ShoppingList.Core;
 using ShoppingList.Database;
 using ShoppingList.Database.Model;
 using ShoppingList.Models;
+using Xamarin.Forms;
 
 namespace ShoppingList.ViewModels
 {
@@ -29,6 +33,8 @@ namespace ShoppingList.ViewModels
             this.mapper = mapper;
 
             UpdateSuggestedNames = new DelegateCommand<bool?>(async (bool? performUpdate) => await PerformUpdateSuggestedNamesAsync(performUpdate));
+            TakePhoto = new DelegateCommand(async () => await TakePhotoAsync());
+            PickPhoto = new DelegateCommand(async () => await PickPhotoAsync());
         }
 
         public Guid Id { get; set; }
@@ -57,11 +63,16 @@ namespace ShoppingList.ViewModels
         public EnumValueDescription ItemState
         {
             get => new EnumValueDescription(State, State.GetDescription());
-            set => State = (ShoppingItemState)value.EnumValue;
+            set
+            {
+                if (value != null)
+                {
+                    State = (ShoppingItemState)value.EnumValue;
+                }
+            }
         }
 
         public DateTime LastBought { get; set; }
-
 
         public DelegateCommand<bool?> UpdateSuggestedNames { get; }
         private async Task PerformUpdateSuggestedNamesAsync(bool? performUpdate)
@@ -77,6 +88,89 @@ namespace ShoppingList.ViewModels
         }
 
         public List<string> SuggestedNames { get; private set; }
+
+        public DelegateCommand TakePhoto { get; }
+
+        private async Task TakePhotoAsync()
+        {
+            if (!IsBusy)
+            {
+                IsBusy = true;
+                if (!CrossMedia.Current.IsCameraAvailable || !CrossMedia.Current.IsTakePhotoSupported)
+                {
+                    //await InteractionService.ShowAlertAsync(UIResources.GetString(202810),
+                    //                                        UIResources.GetString(202811),
+                    //                                        UIResources.GetString(UIShortcut.Remove, 10000)).ConfigureAwait(true);
+                    IsBusy = false;
+                    return;
+                }
+
+                using (var file = await CrossMedia.Current.TakePhotoAsync(new Plugin.Media.Abstractions.StoreCameraMediaOptions
+                {
+                    Directory = "ShoppingList",
+                    SaveToAlbum = true
+                }).ConfigureAwait(true))
+                {
+                    if (file == null)
+                    {
+                        IsBusy = false;
+                        return;
+                    }
+
+                    SetImageProperties(file);
+                }
+                IsBusy = false;
+            }
+        }
+
+        private void SetImageProperties(MediaFile file)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                file.GetStream().CopyTo(memoryStream);
+                ImageData = memoryStream.ToArray();
+            }
+        }
+
+        public DelegateCommand PickPhoto { get; }
+
+        private async Task PickPhotoAsync()
+        {
+            if (!IsBusy)
+            {
+                IsBusy = true;
+                if (!CrossMedia.Current.IsPickPhotoSupported)
+                {
+                    //await InteractionService.ShowAlertAsync(UIResources.GetString(202812),
+                    //                                        UIResources.GetString(202813),
+                    //                                        UIResources.GetString(UIShortcut.Remove, 10000)).ConfigureAwait(true);
+                    IsBusy = false;
+                    return;
+                }
+
+                var pickMediaOptions = new Plugin.Media.Abstractions.PickMediaOptions()
+                {
+                    PhotoSize = PhotoSize.Full
+                };
+
+                var file = await CrossMedia.Current.PickPhotoAsync().ConfigureAwait(true);
+
+                if (file == null)
+                {
+                    IsBusy = false;
+                    return;
+                }
+
+                SetImageProperties(file);
+
+                IsBusy = false;
+            }
+        }
+
+        [DependsOn(nameof(ImageData))]
+        public ImageSource ImageItem => ImageSource.FromStream(() => new MemoryStream(ImageData));
+
+        public byte[] ImageData { get; set; }
 
         public override void OnNavigatedTo(INavigationParameters parameters)
         {
@@ -94,19 +188,27 @@ namespace ShoppingList.ViewModels
         {
             if (dbService != null && uiShoppingItem != null)
             {
-                var oldItem = dbService.FindShoppingItem(Name);
-                if (oldItem != null)
+                if (string.IsNullOrWhiteSpace(Name) && uiShoppingItem.IsNewShoppingItem)
                 {
-                    if (uiShoppingItem.IsNewShoppingItem)
-                    {
-                        dbService.RemoveShoppingItem(uiShoppingItem.DbShoppingItem);
-                        LastBought = oldItem.LastBought;
-                    }
-                    uiShoppingItem = new UIShoppingItem(oldItem);
-                    Id = uiShoppingItem.Id;
+                    dbService.RemoveShoppingItem(uiShoppingItem.DbShoppingItem);
                 }
-                mapper.Map(this, uiShoppingItem);
-                dbService.SaveChanges();
+                else
+                {
+                    var oldItem = dbService.FindShoppingItem(Name);
+                    if (oldItem != null && oldItem.Id != Id)
+                    {
+                        if (uiShoppingItem.IsNewShoppingItem)
+                        {
+                            dbService.RemoveShoppingItem(uiShoppingItem.DbShoppingItem);
+                            LastBought = oldItem.LastBought;
+                            ImageData = oldItem.ImageData;
+                        }
+                        uiShoppingItem = new UIShoppingItem(oldItem);
+                        Id = uiShoppingItem.Id;
+                    }
+                    mapper.Map(this, uiShoppingItem);
+                    dbService.SaveChanges();
+                }
             }
 
         }

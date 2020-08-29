@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -30,12 +31,12 @@ namespace ShoppingList.Database
 
         public async Task SaveChangesAsync()
         {
-            await localContext!.SaveChangesAsync();
+            await localContext.SaveChangesAsync();
         }
 
         public void SaveChanges()
         {
-            localContext!.SaveChanges();
+            localContext.SaveChanges();
         }
 
         public async Task<ObservableCollection<ShoppingItem>> GetShoppingListItemsAsync()
@@ -83,7 +84,7 @@ namespace ShoppingList.Database
         public Task<List<string>> GetSuggestedNames(string name)
         {
             return localContext.ShoppingItem
-                .Where(si => si.Name.Contains(name))
+                .Where(si => si.Name.StartsWith(name))
                 .Select(si => si.Name)
                 .ToListAsync();
         }
@@ -98,6 +99,19 @@ namespace ShoppingList.Database
         public void RemoveShoppingItem(ShoppingItem item)
         {
             localContext.Remove(item);
+        }
+
+        public async Task EndShopping()
+        {
+            var boughtItems = await localContext.ShoppingItem
+                .Where(si => si.State == ShoppingItemState.Bought)
+                .ToListAsync();
+
+            foreach(var boughtItem in boughtItems)
+            {
+                boughtItem.State = ShoppingItemState.ShoppingComplete;
+            }
+            await localContext.SaveChangesAsync();
         }
     }
 }

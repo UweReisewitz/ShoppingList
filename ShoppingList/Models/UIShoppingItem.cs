@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using AutoMapper;
 using Prism.Navigation;
 using PropertyChanged;
 using ShoppingList.Core;
 using ShoppingList.Database;
 using ShoppingList.Database.Model;
+using Xamarin.Forms;
 
 namespace ShoppingList.Models
 {
@@ -47,7 +49,22 @@ namespace ShoppingList.Models
             set => DbShoppingItem.LastBought = value;
         }
 
+        public byte[] ImageData
+        {
+            get => DbShoppingItem.ImageData;
+            set => DbShoppingItem.ImageData = value;
+        }
+
         [DependsOn(nameof(State))]
         public string StateText => State.GetDescription();
+
+        [DependsOn(nameof(ImageData))]
+        public ImageSource ImageItem => ImageSource.FromStream(() => new MemoryStream(ImageData));
+
+        [DependsOn(nameof(State))]
+        public bool IsOpen => State == ShoppingItemState.Open;
+
+        [DependsOn(nameof(State))]
+        public bool IsBought => State == ShoppingItemState.Bought;
     }
 }

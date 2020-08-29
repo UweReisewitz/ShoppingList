@@ -9,6 +9,11 @@
              BindingContext="local:ShoppingItemDetailViewModel"
                 >
 
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Photo" Command="{Binding TakePhoto}" />
+        <ToolbarItem Text="Pick" Command="{Binding PickPhoto}" />
+    </ContentPage.ToolbarItems>
+    
     <Grid>
         <StackLayout  Orientation="Vertical" Spacing="20">
             <Grid Padding="17,0,5,0" RowSpacing="20">
@@ -17,6 +22,7 @@
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="1*"/>
+                    <RowDefinition Height="6*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="3*"/>
@@ -40,7 +46,7 @@
                         ItemDisplayBinding="{Binding Description}" SelectedItem="{Binding ItemState}" />
                 <Label Grid.Row="3" Grid.Column="0" Text="Last bought:" />
                 <Label Grid.Row="3" Grid.Column="1" Text="{Binding LastBought, Converter={StaticResource DisplayDateTimeConverter}}" />
-
+                <Image Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Source="{Binding ImageItem}" Aspect="AspectFit" />
             </Grid>
         </StackLayout>
     </Grid>

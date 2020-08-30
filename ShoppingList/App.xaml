@@ -29,6 +29,12 @@
                     </VisualStateGroupList>
                 </Setter>
             </Style>
+            <Style TargetType="Label">
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
+            <Style TargetType="Entry">
+                <Setter Property="VerticalTextAlignment" Value="Center"/>
+            </Style>
             <converters:DisplayDateTimeConverter x:Key="DisplayDateTimeConverter"/>
             <converters:DisplayGuidConverter x:Key="DisplayGuidConverter"/>
             <converters:AutoSuggestBoxTextChangedEventArgsToPerformUpdateConverter x:Key="AutoSuggestTextChangedConverter"/>

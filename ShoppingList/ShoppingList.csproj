@@ -44,5 +44,6 @@
 
   <ItemGroup>
     <Folder Include="Behaviors\" />
+    <Folder Include="Properties\" />
   </ItemGroup>
 </Project>

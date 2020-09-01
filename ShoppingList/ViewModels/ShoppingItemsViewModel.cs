@@ -26,8 +26,6 @@ namespace ShoppingList.ViewModels
             this.dbService = dbServiceFactory?.CreateNew() ?? throw new ArgumentNullException(nameof(dbServiceFactory));
             this.mapper = mapper;
 
-            Title = "Shopping List";
-
             Items = new ObservableCollection<UIShoppingItem>();
             LoadItemsCommand = new DelegateCommand(async () => await ExecuteLoadItemsCommandAsync());
 
@@ -54,6 +52,7 @@ namespace ShoppingList.ViewModels
             if (item != null && item.State == ShoppingItemState.Open)
             {
                 item.State = ShoppingItemState.Bought;
+                item.LastBought = DateTime.Now;
                 await dbService.SaveChangesAsync();
             }
         }

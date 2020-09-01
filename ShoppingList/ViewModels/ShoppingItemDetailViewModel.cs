@@ -29,7 +29,6 @@ namespace ShoppingList.ViewModels
         public ShoppingItemDetailViewModel(INavigationService navigationService, IMapper mapper)
             : base(navigationService)
         {
-            Title = "Detail View";
             this.mapper = mapper;
 
             UpdateSuggestedNames = new DelegateCommand<bool?>(async (bool? performUpdate) => await PerformUpdateSuggestedNamesAsync(performUpdate));

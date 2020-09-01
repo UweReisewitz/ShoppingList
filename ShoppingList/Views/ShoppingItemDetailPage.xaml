@@ -5,13 +5,13 @@
              xmlns:behaviors="clr-namespace:ShoppingList.Behaviors"
              xmlns:dm="clr-namespace:dotMorten.Xamarin.Forms;assembly=dotMorten.Xamarin.Forms.AutoSuggestBox"
              x:Class="ShoppingList.Views.ShoppingItemDetailPage"
-             Title="{Binding Title}"
+             Title="{DynamicResource DetailPageTitle}"
              BindingContext="local:ShoppingItemDetailViewModel"
                 >
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Photo" Command="{Binding TakePhoto}" IconImageSource="ToolbarCamera.png" />
-        <ToolbarItem Text="Pick" Command="{Binding PickPhoto}" IconImageSource="ToolbarPickPhoto.png" />
+        <ToolbarItem Text="{DynamicResource ToolbarCamera}" Command="{Binding TakePhoto}" IconImageSource="ToolbarCamera.png" />
+        <ToolbarItem Text="{DynamicResource ToolbarPick}" Command="{Binding PickPhoto}" IconImageSource="ToolbarPickPhoto.png" />
     </ContentPage.ToolbarItems>
     
     <Grid>
@@ -31,7 +31,7 @@
 
                 <Label Grid.Row="0" Grid.Column="0" Text="Id:"  />
                 <Label Grid.Row="0" Grid.Column="1" Text="{Binding Id, Converter={StaticResource DisplayGuidConverter}}" />
-                <Label Grid.Row="1" Grid.Column="0" Text="Name:"  />
+                <Label Grid.Row="1" Grid.Column="0" Text="{DynamicResource LabelName}"  />
                 <!--<Entry Grid.Row="1" Grid.Column="1" Text="{Binding Name}" />-->
                 <dm:AutoSuggestBox Grid.Row="1" Grid.Column="1" 
                                     Text="{Binding Name, Mode=TwoWay}"
@@ -41,10 +41,10 @@
                     </dm:AutoSuggestBox.Behaviors>
                 </dm:AutoSuggestBox>
 
-                <Label Grid.Row="2" Grid.Column="0" Text="State:"  />
+                <Label Grid.Row="2" Grid.Column="0" Text="{DynamicResource LabelState}"  />
                 <Picker Grid.Row="2" Grid.Column="1"  ItemsSource="{Binding ItemStateList}" 
                         ItemDisplayBinding="{Binding Description}" SelectedItem="{Binding ItemState}" />
-                <Label Grid.Row="3" Grid.Column="0" Text="Last bought:" />
+                <Label Grid.Row="3" Grid.Column="0" Text="{DynamicResource LabelLastBought}" />
                 <Label Grid.Row="3" Grid.Column="1" Text="{Binding LastBought, Converter={StaticResource DisplayDateTimeConverter}}" />
                 <Image Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="2" Source="{Binding ImageItem}" Aspect="AspectFit" />
             </Grid>

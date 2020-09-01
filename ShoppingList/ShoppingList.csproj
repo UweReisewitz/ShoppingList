@@ -34,7 +34,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\ShoppingItemDetailPage.xaml.cs">
+      <Compile Update="Views\ShoppingItemDetailPage.xaml.cs">
       <DependentUpon>ShoppingItemDetailPage.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\ShoppingItemsPage.xaml.cs">

@@ -60,6 +60,7 @@
     <DeviceSpecificBuild>false</DeviceSpecificBuild>
     <CodesignKey>Apple Development: Uwe Reisewitz (94ZTQMNFF5)</CodesignKey>
     <LangVersion>8.0</LangVersion>
+    <MtouchI18n>west</MtouchI18n>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
     <DebugType>none</DebugType>

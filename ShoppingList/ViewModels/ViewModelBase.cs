@@ -6,7 +6,7 @@ using PropertyChanged;
 namespace ShoppingList.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
-    public class ViewModelBase : BindableBase, IInitializeAsync, INavigationAware, IDestructible
+    public class ViewModelBase : BindableBase, IInitializeAsync, INavigationAware, IConfirmNavigationAsync, IDestructible
     {
         protected INavigationService NavigationService { get; private set; }
 
@@ -32,10 +32,14 @@ namespace ShoppingList.ViewModels
 
         }
 
+        public virtual Task<bool> CanNavigateAsync(INavigationParameters parameters)
+        {
+            return Task<bool>.FromResult(true);
+        }
+
         public virtual void Destroy()
         {
 
         }
-
     }
 }

@@ -40,7 +40,7 @@ namespace ShoppingList.ViewModels
         public DelegateCommand ShoppingDoneCommand { get; }
         private async Task ShoppingDoneCommandAsync()
         {
-            await dbService.EndShopping();
+            await dbService.EndShoppingAsync();
             await ExecuteLoadItemsCommandAsync();
         }
 
@@ -97,7 +97,7 @@ namespace ShoppingList.ViewModels
         private async Task OnAddItemAsync()
         {
             var dbShoppingItem = new ShoppingItem();
-            dbService.AddShoppingItem(dbShoppingItem);
+            await dbService.AddShoppingItemAsync(dbShoppingItem);
             var uiShoppingItem = new UIShoppingItem(dbShoppingItem, true);
 
             await NavigateToDetailPageAsync(uiShoppingItem);

@@ -29,14 +29,14 @@ namespace ShoppingList.Database
             }
         }
 
-        public async Task SaveChangesAsync()
-        {
-            await localContext.SaveChangesAsync();
-        }
-
         public void SaveChanges()
         {
             localContext.SaveChanges();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await localContext.SaveChangesAsync();
         }
 
         public async Task<ObservableCollection<ShoppingItem>> GetShoppingListItemsAsync()
@@ -76,14 +76,14 @@ namespace ShoppingList.Database
             GC.SuppressFinalize(this);
         }
 
-        public void AddShoppingItem(ShoppingItem item)
+        public async Task AddShoppingItemAsync(ShoppingItem item)
         {
-            localContext.ShoppingItem.Add(item);
+            await localContext.ShoppingItem.AddAsync(item);
         }
 
-        public Task<List<string>> GetSuggestedNames(string name)
+        public async Task<List<string>> GetSuggestedNamesAsync(string name)
         {
-            return localContext.ShoppingItem
+            return await localContext.ShoppingItem
                 .Where(si => si.Name.StartsWith(name))
                 .Select(si => si.Name)
                 .ToListAsync();
@@ -96,12 +96,19 @@ namespace ShoppingList.Database
                 .FirstOrDefault();
         }
 
+        public async Task<ShoppingItem> FindShoppingItemAsync(string name)
+        {
+            return await localContext.ShoppingItem
+                .Where(si => si.Name == name)
+                .FirstOrDefaultAsync();
+        }
+
         public void RemoveShoppingItem(ShoppingItem item)
         {
             localContext.Remove(item);
         }
 
-        public async Task EndShopping()
+        public async Task EndShoppingAsync()
         {
             var boughtItems = await localContext.ShoppingItem
                 .Where(si => si.State == ShoppingItemState.Bought)

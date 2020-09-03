@@ -78,7 +78,7 @@ namespace ShoppingList.ViewModels
         {
             if (performUpdate.HasValue && performUpdate.Value)
             {
-                SuggestedNames = await dbService.GetSuggestedNames(Name);
+                SuggestedNames = await dbService.GetSuggestedNamesAsync(Name);
             }
             else
             {
@@ -209,7 +209,6 @@ namespace ShoppingList.ViewModels
                     dbService.SaveChanges();
                 }
             }
-
         }
     }
 }

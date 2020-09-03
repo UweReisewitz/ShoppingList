@@ -9,19 +9,19 @@ namespace ShoppingList.Database
     {
         Task CreateOrMigrateDatabaseAsync();
 
-        Task SaveChangesAsync();
-
         void SaveChanges();
+        Task SaveChangesAsync();
 
         Task<ObservableCollection<ShoppingItem>> GetShoppingListItemsAsync();
 
-        void AddShoppingItem(ShoppingItem item);
+        Task AddShoppingItemAsync(ShoppingItem item);
         void RemoveShoppingItem(ShoppingItem item);
-        Task EndShopping();
+        Task EndShoppingAsync();
 
         ShoppingItem FindShoppingItem(string name);
+        Task<ShoppingItem> FindShoppingItemAsync(string name);
 
-        Task<List<string>> GetSuggestedNames(string name);
+        Task<List<string>> GetSuggestedNamesAsync(string name);
 
 
     }
